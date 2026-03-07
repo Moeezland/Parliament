@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bills - The Parliament of Moeezland</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="brand">
+            <img src="logo.png" class="logo">
+            <h1>The Parliament of Moeezland</h1>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle">
+            ☰
+        </button>
+    </div>
+
+    <nav id="mainNav">
+        <a href="index.html">Home</a>
+        <a href="bills.html">Bills</a>
+        <a href="members.html">Members</a>
+        <a href="gazette.html">Official Gazette</a>
+        <a href="login.html">Sign In</a>
+        <form action="search.html" method="GET" class="search-box">
+        <input type="text" name="q" placeholder="Search laws or bills..." required>
+        <button type="submit">🔍</button>
+        </form>
+        
+        </nav>
+</header>
+
+<main>
+    <h2>Legislative Bills</h2>
+    <div id="billsContainer"></div>
+</main>
+
+<footer style="background:#2f5fa7;padding:48px 24px;color:rgba(255,255,255,0.75);text-align:left;">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <img src="footer.png" class="footer-emblem" alt="Moeezland Emblem">
+
+    <h4 style="margin:0;color:white;font-size:16px;">Hereditary Monarchy of Moeezland</h4>
+    <div style="font-size:13px;margin-top:4px;">Official government website</div>
+
+    <p style="font-size:13px;line-height:1.6;">
+      © 2026 The Parliament of Moeezland — Dehran  
+All legislative records and parliamentary materials published through this portal are maintained by the Office of the Parliament
+in accordance with the laws and constitutional framework of the Hereditary Monarchy of Moeezland.
+    </p>
+
+    </div>
+
+  </div>
+</footer>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { 
+  getFirestore, 
+  collection, 
+  getDocs, 
+  orderBy, 
+  query,
+  doc,
+  getDoc,
+  setDoc,
+  deleteDoc
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyC2zJ6w86poNDCnB6toXvOpQ_jzE7CdLVE",
+  authDomain: "moeezland-parliament.firebaseapp.com",
+  projectId: "moeezland-parliament",
+  storageBucket: "moeezland-parliament.firebasestorage.app",
+  messagingSenderId: "447146344138",
+  appId: "1:447146344138:web:8995d70b604bf0dd2a3e33",
+  measurementId: "G-PLLE15TYED"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const billsContainer = document.getElementById("billsContainer");
+
+async function loadBills() {
+
+    try {
+        const q = query(collection(db, "bills"), orderBy("createdAt", "desc"));
+        const querySnapshot = await getDocs(q);
+
+        billsContainer.innerHTML = "";
+
+        querySnapshot.forEach((doc) => {
+            const bill = doc.data();
+
+            const div = document.createElement("div");
+            div.className = "status-box";
+            let actionsHTML = "";
+
+            if(currentUser && userRole === "monarch"){
+            actionsHTML = `
+            <div class="bill-actions">
+
+            <button class="approve-btn" data-id="${doc.id}">
+            Approve
+            </button>
+
+            <button class="veto-btn" data-id="${doc.id}">
+            Veto
+            </button>
+
+            </div>
+            `;
+             }
+
+            div.innerHTML = `
+            <h3>${bill.code}</h3>
+
+            <p><strong>Title:</strong> ${bill.title}</p>
+            <p><strong>Sponsor:</strong> ${bill.sponsor}</p>
+            <p><strong>Status:</strong> ${bill.status}</p>
+
+            <a href="bill.html?id=${doc.id}" class="view-more">
+            View More
+            </a>
+
+            ${actionsHTML}
+            `;
+
+            billsContainer.appendChild(div);
+        });
+
+    } catch (error) {
+        console.error(error);
+    }
+
+}
+
+let currentUser = null;
+let userRole = null;
+    
+onAuthStateChanged(auth, async (user) => {
+
+    currentUser = user;
+
+    if(user){
+
+        const memberRef = doc(db,"members",user.email);
+        const memberSnap = await getDoc(memberRef);
+
+        if(memberSnap.exists()){
+            userRole = memberSnap.data().role;
+        }
+
+    }
+
+    loadBills();
+
+});
+
+    async function approveBill(billId){
+
+    try{
+
+    const billRef = doc(db,"bills",billId);
+    const billSnap = await getDoc(billRef);
+
+    if(!billSnap.exists()){
+    console.log("Bill not found");
+    return;
+    }
+
+    const billData = billSnap.data();
+
+    console.log("Bill data:",billData);
+
+    await setDoc(doc(db, "decrees", billId), {
+      code: billData.code,
+      title: billData.title,
+      sponsor: billData.sponsor,
+      status: "Enacted",
+      enactedDate: new Date(),
+      content: billData.content
+    });
+
+    await deleteDoc(billRef);
+
+    loadBills();
+
+    console.log("Bill successfully approved");
+
+    }catch(err){
+    console.error("Approve error:",err);
+    }
+
+    }
+
+    async function vetoBill(billId){
+
+    try{
+
+    await deleteDoc(doc(db,"bills",billId));
+
+    loadBills();
+
+    }catch(err){
+    console.error("Veto error:",err);
+    }
+
+    }
+
+    document.addEventListener("click", function(e){
+
+    const approveBtn = e.target.closest(".approve-btn");
+    const vetoBtn = e.target.closest(".veto-btn");
+
+    if(approveBtn){
+        const id = approveBtn.dataset.id;
+        approveBill(id);
+    }
+
+    if(vetoBtn){
+        const id = vetoBtn.dataset.id;
+        vetoBill(id);
+    }
+
+    });
+
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("menuToggle");
+    const nav = document.getElementById("mainNav");
+
+    if (toggle && nav) {
+        toggle.addEventListener("click", function() {
+            nav.classList.toggle("active");
+        });
+    }
+});
+</script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

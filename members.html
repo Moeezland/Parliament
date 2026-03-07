@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Members - The Parliament of Moeezland</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="brand">
+            <img src="logo.png" class="logo">
+            <h1>The Parliament of Moeezland</h1>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle">
+            ☰
+        </button>
+    </div>
+
+    <nav id="mainNav">
+        <a href="index.html">Home</a>
+        <a href="bills.html">Bills</a>
+        <a href="members.html">Members</a>
+        <a href="gazette.html">Official Gazette</a>
+        <a href="login.html">Sign In</a>
+
+        <form action="search.html" method="GET" class="search-box">
+        <input type="text" name="q" placeholder="Search laws or bills..." required>
+        <button type="submit">🔍</button>
+        </form>
+        
+    </nav>
+</header>
+
+<main>
+    <h2>Members of Parliament</h2>
+
+    <div id="membersList">
+    Loading members...
+    </div>
+
+</main>
+
+<footer style="background:#2f5fa7;padding:48px 24px;color:rgba(255,255,255,0.75);text-align:left;">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <img src="footer.png" class="footer-emblem" alt="Moeezland Emblem">
+
+    <h4 style="margin:0;color:white;font-size:16px;">Hereditary Monarchy of Moeezland</h4>
+    <div style="font-size:13px;margin-top:4px;">Official government website</div>
+
+    <p style="font-size:13px;line-height:1.6;">
+      © 2026 The Parliament of Moeezland — Dehran  
+All legislative records and parliamentary materials published through this portal are maintained by the Office of the Parliament
+in accordance with the laws and constitutional framework of the Hereditary Monarchy of Moeezland.
+    </p>
+
+    </div>
+
+  </div>
+</footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("menuToggle");
+    const nav = document.getElementById("mainNav");
+
+    if (toggle && nav) {
+        toggle.addEventListener("click", function() {
+            nav.classList.toggle("active");
+        });
+    }
+});
+</script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, getDocs }
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyC2zJ6w86poNDCnB6toXvOpQ_jzE7CdLVE",
+authDomain: "moeezland-parliament.firebaseapp.com",
+projectId: "moeezland-parliament",
+storageBucket: "moeezland-parliament.firebasestorage.app",
+messagingSenderId: "447146344138",
+appId: "1:447146344138:web:8995d70b604bf0dd2a3e33"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const membersDiv = document.getElementById("membersList");
+
+async function loadMembers(){
+
+const snapshot = await getDocs(collection(db,"members"));
+
+console.log(snapshot);   // 👈 add this line here
+
+let html="";
+
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+html += `
+<div class="status-box">
+<h3>${data.name}</h3>
+<p>Email: ${data.email}</p>
+<p>Position: ${data.position}</p>
+<p>Joined Parliament: ${data.joined}</p>
+</div>
+`;
+
+});
+
+membersDiv.innerHTML = html;
+
+}
+
+loadMembers();
+
+</script>
+    
+</body>
+
+</html>
+
+
+
+
+
+
+
+

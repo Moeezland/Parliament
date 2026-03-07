@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Parliament of Moeezland</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+    <div class="header-inner">
+        <div class="brand">
+            <img src="logo.png" class="logo">
+            <h1>The Parliament of Moeezland</h1>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle">☰</button>
+    </div>
+
+    <nav id="mainNav">
+        <a href="index.html">Home</a>
+        <a href="bills.html">Bills</a>
+        <a href="members.html">Members</a>
+        <a href="gazette.html">Official Gazette</a>
+        <a href="login.html">Sign In</a>
+
+        <form action="search.html" method="GET" class="search-box">
+        <input type="text" name="q" placeholder="Search laws or bills..." required>
+        <button type="submit">🔍</button>
+        </form>
+        
+    </nav>
+</header>
+
+<main>
+    <section class="welcome">
+        <h2>Welcome to the Legislative Portal</h2>
+        <p>
+            The Moeezland Parliament (Majlis al-ʿĀmmah) is the legislative authority
+            of the Hereditary Monarchy of Moeezland.
+        </p>
+        <p>
+            This portal provides public access to parliamentary sessions,
+            legislative proposals, and ratified laws.
+        </p>
+    </section>
+
+    <section class="status-box">
+        <h3>Current Parliamentary Session</h3>
+        <p>Status: <strong>Adjourned</strong></p>
+        <p>Session: Summer 2026</p>
+    </section>
+
+    <section class="status-box">
+        <h3>Latest Legislative Bills</h3>
+
+        <div id="latestBills">
+        Loading latest bills...
+        </div>
+
+    </section>
+</main>
+
+<footer style="background:#2f5fa7;padding:48px 24px;color:rgba(255,255,255,0.75);text-align:left;">
+  <div style="max-width:1200px;margin:0 auto;">
+
+    <img src="footer.png" class="footer-emblem" alt="Moeezland Emblem">
+
+    <h4 style="margin:0;color:white;font-size:16px;">Hereditary Monarchy of Moeezland</h4>
+    <div style="font-size:13px;margin-top:4px;">Official government website</div>
+
+    <p style="font-size:13px;line-height:1.6;">
+      © 2026 The Parliament of Moeezland — Dehran  
+All legislative records and parliamentary materials published through this portal are maintained by the Office of the Parliament
+in accordance with the laws and constitutional framework of the Hereditary Monarchy of Moeezland.
+    </p>
+
+    </div>
+
+  </div>
+</footer>
+    
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggle = document.getElementById("menuToggle");
+    const nav = document.getElementById("mainNav");
+
+    if (toggle && nav) {
+        toggle.addEventListener("click", function() {
+            nav.classList.toggle("active");
+        });
+    }
+});
+</script>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, getDocs, query, orderBy, limit }
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyC2zJ6w86poNDCnB6toXvOpQ_jzE7CdLVE",
+authDomain: "moeezland-parliament.firebaseapp.com",
+projectId: "moeezland-parliament",
+storageBucket: "moeezland-parliament.firebasestorage.app",
+messagingSenderId: "447146344138",
+appId: "1:447146344138:web:8995d70b604bf0dd2a3e33"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const latestBillsDiv = document.getElementById("latestBills");
+
+async function loadLatestBills(){
+
+const billsQuery = query(
+collection(db,"bills"),
+orderBy("title"),
+limit(3)
+);
+
+const snapshot = await getDocs(billsQuery);
+
+let html="";
+
+snapshot.forEach(doc=>{
+
+const data = doc.data();
+
+html += `
+<div>
+<strong>${data.code}</strong><br>
+${data.title}<br>
+<a href="bill.html?id=${doc.id}" class="view-more">View Bill</a>
+</div>
+<hr>
+`;
+
+});
+
+if(html===""){
+latestBillsDiv.innerHTML="No bills currently submitted.";
+}else{
+latestBillsDiv.innerHTML=html;
+}
+
+}
+
+loadLatestBills();
+
+</script>
+    
+</body>
+
+</html>
+
+
+
+
+
+
+
+
+

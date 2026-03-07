@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Search - Parliament of Moeezland</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+<div class="header-container">
+<img src="logo.png" class="logo">
+<h1>The Parliament of Moeezland</h1>
+</div>
+</header>
+
+<main>
+
+<div class="status-box">
+<h2>Search Results</h2>
+
+<div id="results">Searching...</div>
+</div>
+  
+</main>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, getDocs }
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+const firebaseConfig = {
+
+apiKey: "AIzaSyC2zJ6w86poNDCnB6toXvOpQ_jzE7CdLVE",
+authDomain: "moeezland-parliament.firebaseapp.com",
+projectId: "moeezland-parliament",
+storageBucket: "moeezland-parliament.firebasestorage.app",
+messagingSenderId: "447146344138",
+appId: "1:447146344138:web:8995d70b604bf0dd2a3e33"
+
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const params = new URLSearchParams(window.location.search);
+const searchQuery = (params.get("q") || "").toLowerCase();
+
+const resultsDiv = document.getElementById("results");
+
+async function searchPortal(){
+
+let html = "";
+
+const billsSnapshot = await getDocs(collection(db,"bills"));
+
+billsSnapshot.forEach(doc => {
+
+const data = doc.data();
+
+if(data.title && data.title.toLowerCase().includes(searchQuery)){
+
+html += `
+<div class="status-box">
+<h3>${data.code}</h3>
+<p>${data.title}</p>
+<a href="bill.html?id=${doc.id}">View Bill</a>
+</div>
+`;
+
+}
+
+});
+
+
+const decreesSnapshot = await getDocs(collection(db,"decrees"));
+
+decreesSnapshot.forEach(doc => {
+
+const data = doc.data();
+
+if(data.title && data.title.toLowerCase().includes(searchQuery)){
+
+html += `
+<div class="status-box">
+<h3>${data.code}</h3>
+<p>${data.title}</p>
+<a href="decree.html?id=${doc.id}">View Decree</a>
+</div>
+`;
+
+}
+
+});
+
+
+if(html===""){
+
+resultsDiv.innerHTML="<p>No results found.</p>";
+
+}else{
+
+resultsDiv.innerHTML=html;
+
+}
+
+}
+
+searchPortal();
+
+</script>
+
+</body>
+
+</html>

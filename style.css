@@ -1,0 +1,352 @@
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #222;
+}
+
+/* ========================= */
+/* Header */
+/* ========================= */
+
+header {
+    background-color: #2f5fa7;
+    color: white;
+    padding: 15px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.header-container {
+display: flex;
+align-items: center;
+gap: 15px;
+}
+
+.header-container h1 {
+margin-left: 10px;
+margin-right: auto;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    height: 60px;
+    margin-right: 20px;
+}
+
+h1 {
+    font-size: 26px;
+    font-weight: normal;
+}
+
+h2 {
+    font-size: 22px;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+/* ========================= */
+/* Hamburger */
+/* ========================= */
+
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 26px;
+    color: white;
+    cursor: pointer;
+}
+
+/* ========================= */
+/* Navigation */
+/* ========================= */
+
+nav {
+    padding: 12px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.25);
+    display: flex;
+    align-items: center;
+}
+
+nav a {
+    color: white;
+    font-size: 15px;
+    text-decoration: none;
+    margin-right: 20px;
+    font-weight: 500;
+}
+
+nav a:hover {
+    text-decoration: underline;
+}
+
+/* ========================= */
+/* Layout */
+/* ========================= */
+
+main {
+    padding: 40px 20px;
+    max-width: 1000px;
+    margin: auto;
+}
+
+.welcome {
+    background-color: white;
+    padding: 20px;
+    border-left: 5px solid #2f5fa7;
+    margin-bottom: 20px;
+}
+
+.status-box {
+    background-color: white;
+    padding: 20px;
+    border: 1px solid #d8d8d8;
+    margin-bottom: 20px;
+    border-radius: 2px;
+}
+
+.status-box h3 {
+    font-weight: 600;
+    color: #1d1d1d;
+}
+
+.dashboard-actions {
+    margin-top: 15px;
+}
+
+/* ========================= */
+/* Buttons */
+/* ========================= */
+
+.action-btn {
+    display: block;
+    background-color: #2f5fa7;
+    color: white;
+    padding: 12px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 3px;
+    text-align: center;
+}
+
+.action-btn:hover {
+    background-color: #244a82;
+}
+
+.view-more {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 14px;
+    color: #2f5fa7;
+    text-decoration: none;
+}
+
+.view-more:hover {
+    text-decoration: underline;
+}
+
+/* ========================= */
+/* Forms */
+/* ========================= */
+
+input,
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 15px;
+    font-family: inherit;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #2f5fa7;
+}
+
+.login-card {
+    max-width: 420px;
+    margin: 60px auto;
+}
+
+.login-card h2 {
+    text-align: center;
+}
+
+input, textarea {
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+main {
+    flex: 1;
+}
+
+/* Search Results Styling */
+
+#results {
+    margin-top: 15px;
+}
+
+#results div {
+    background: #ffffff;
+    border: 1px solid #ddd;
+    padding: 18px;
+    margin-bottom: 18px;
+}
+
+#results h3 {
+    margin: 0 0 8px 0;
+}
+
+#results a {
+    color: #2f5fa7;
+    text-decoration: none;
+}
+
+#results a:hover {
+    text-decoration: underline;
+}
+
+/* ========================= */
+/* Search Box */
+/* ========================= */
+
+.search-box {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+}
+
+.search-box input {
+    width: 220px;
+    height: 34px;
+    padding: 0 8px;
+    border: 1px solid #ccc;
+
+    margin-bottom: 0;
+    box-sizing: border-box;
+}
+
+.search-box button {
+    height: 34px;
+    width: 36px;
+    margin-left: 5px;
+    border: none;
+    background: #2f5fa7;
+    color: white;
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-sizing: border-box;
+}
+
+.search-box button:hover {
+    background: #2f5fa7;
+}
+
+/* Footer emblem */
+
+.footer-emblem {
+    max-width: 100%;
+    height: auto;
+    max-height: 72px;
+    margin-bottom: 14px;
+}
+
+/* ========================= */
+/* Footer */
+/* ========================= */
+
+footer {
+    margin-top: 40px;
+    background-color: #2f5fa7;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}
+
+/* ========================= */
+/* Mobile */
+/* ========================= */
+
+@media (max-width: 768px) {
+
+    .header-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .logo {
+        margin-bottom: 10px;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    nav {
+        display: none;
+        text-align: center;
+    }
+
+    nav.active {
+        display: block;
+    }
+
+    nav a {
+        display: block;
+        margin: 8px 0;
+    }
+
+    main {
+        padding: 15px;
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
